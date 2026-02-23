@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <script>
+    const handleResponse = async (response, parseResponse) => {
+      const content = document.querySelector('#content');
+
+      switch(response.status) {
+        case 200:
+          content.innerHTML = `<b>Success</b>`;
+          break;
+        case 201:
+          content.innerHTML = `<b>Created</b>`;
+          break;
+        case 204:
+          content.innerHTML = `<b>Updated (No Content)</b>`;
+          return;
+        case 400:
+          content.innerHTML = `<b>Bad Request</b>`;
+          break;
+        case 404:
+          content.innerHTML = `<b>Resource Not Found</b>`;
+          break;
+        default:
+          content.innerHTML = `<b>Error code not implemented.</b>`;
+          break;
+      }
+
+      if (parseResponse) {
+        const obj = await response.json();
+        
+        if (obj.error) {
+          content.innerHTML += `<p>Message: ${obj.error}</p>`;
+        } else {
+          content.innerHTML += `<p>${JSON.stringify(obj)}</p>`;
+        }
+      } else {
+        content.innerHTML += `<p>Meta Data Received</p>`;
+      }
+    };
+
+    const requestUpdate = async (e, searchForm) => {
+      e.preventDefault();
+
+      const url = searchForm.querySelector('#urlField').value;
+      const method = searchForm.querySelector('#methodSelect').value;
+      
+      let fetchUrl = url;
+
+      const response = await fetch(fetchUrl, {
+        method: method,
+        headers: {
+          'Accept': 'application/json'
+        },
+      });
+
+      handleResponse(response, method == 'GET');
+    };
+
+    const sendPost = async (e, addForm) => {
+      e.preventDefault();
+
+      const nameAction = addForm.getAttribute('action');
+      const nameMethod = addForm.getAttribute('method');
+      
+      const nameField = addForm.querySelector('#nameField').value;
+      const typeField = addForm.querySelector('#typeField').value;
+
+      const formData = {
+        name: nameField,
+        type: typeField
+      };
+
+      const response = await fetch(nameAction, {
+        method: nameMethod,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      handleResponse(response, true);
+    };
+
+    const init = () => {
+      const searchForm = document.querySelector('#searchForm');
+      const addForm = document.querySelector('#addForm');
+
+      const searchAction = (e) => requestUpdate(e, searchForm);
+      const addAction = (e) => sendPost(e, addForm);
+
+      searchForm.addEventListener('submit', searchAction);
+      addForm.addEventListener('submit', addAction);
+    };
+
+    window.onload = init;
+  </script>
+</head>
+<body>
+  <section id="top">
+    <h3>Pokédex API</h3>
+    <form id="searchForm">
+      <select id="urlField">
+        <option value="/api/pokemon">/api/pokemon</option>
+        <option value="/notReal">/notReal (Test 404)</option>
+      </select>
+      <select id="methodSelect">
+        <option value="GET">GET</option>
+        <option value="HEAD">HEAD</option>
+      </select>
+      <input type="text" id="typeQuery" placeholder="Filter by Type">
+      <input type="number" id="limitQuery" placeholder="Limit">
+      <input type="submit" value="Search Data" />
+    </form>
+
+    <hr>
+
+    <form id="addForm" action="/api/pokemon" method="POST">
+      <input type="text" id="nameField" placeholder="Pokemon Name">
+      <input type="text" id="typeField" placeholder="Type">
+      <input type="submit" value="Add Pokémon" />
+    </form>
+  </section>
+
+  <section id="content">
+  </section>
+</body>
+</html>

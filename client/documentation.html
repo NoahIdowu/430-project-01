@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Documentation</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Pokédex API Documentation</h1>
+    <p><a href="/client.html">Back to App</a></p>
+
+    <div class="endpoint">
+        <h3>1. Get All Pokémon</h3>
+        <p><strong>Relative URL:</strong> <code>/api/pokemon</code></p>
+        <p><strong>Supported Methods:</strong> GET, HEAD</p>
+        <p><strong>Query Params:</strong></p>
+        <ul>
+            <li><code>type</code>: Filters by Pokémon type.</li>
+        </ul>
+        <p><strong>Returns:</strong> JSON Array of Pokémon objects.</p>
+        <p><strong>Example Usage:</strong> <code>/api/pokemon?type=fire&limit=5</code></p>
+    </div>
+
+    <div class="endpoint">
+        <h3>2. Add a Pokémon</h3>
+        <p><strong>Relative URL:</strong> <code>/api/pokemon</code></p>
+        <p><strong>Supported Methods:</strong> POST</p>
+        <p><strong>Body Params:</strong></p>
+        <ul>
+            <li><code>name</code>: The name of the Pokémon.</li>
+            <li><code>type</code>: The type of the Pokémon.</li>
+        </ul>
+        <p><strong>Returns:</strong> JSON Object of the created Pokémon.</p>
+        <p><strong>Example Usage:</strong> Send JSON body <code>{"name": "Mewthree", "type": "Psychic"}</code></p>
+    </div>
+
+    </body>
+</html>
