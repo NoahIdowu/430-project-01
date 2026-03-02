@@ -36,6 +36,7 @@ const parseBody = (request, response, handler) => {
     });
 };
 
+// Sends POST requests to the corresponding handler
 const handlePost = (request, response, parsedUrl) => {
     if (parsedUrl.pathname === '/api/pokemon') {
         parseBody(request, response, responseHandler.addPokemon);
@@ -46,6 +47,7 @@ const handlePost = (request, response, parsedUrl) => {
     }
 };
 
+// Sends GET requests to the corresponding handler
 const handleGet = (request, response, parsedUrl) => {
     if (parsedUrl.pathname === '/style.css') {
         htmlHandler.getCss(request, response);
@@ -54,11 +56,15 @@ const handleGet = (request, response, parsedUrl) => {
     } else if (parsedUrl.pathname === '/api/pokemon') {
         responseHandler.getPokemon(request, response);
     }
+    else if(parsedUrl.pathname === '/api/type'){
+        responseHandler.getTypes(request,response, parsedUrl);
+    }
     else {
         responseHandler.notFound(request, response);
     }
 };
 
+// Handles requests
 const onRequest = (request, response) => {
     const protocol = request.connection.encrypted ? 'https' : 'http';
     const parsedUrl = new URL(request.url, `${protocol}://${request.headers.host}`);
